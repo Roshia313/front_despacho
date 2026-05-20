@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  # Base de Datos MySQL
+  db-mysql:
+    image: mysql:8.0
+    container_name: mysql_db
+    environment:
+      MYSQL_DATABASE: smartlogix_db
+      MYSQL_ROOT_PASSWORD: root_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql # Requisito 2: Persistencia con Named Volume
+    networks:
+      - smartlogix-net
+
+  # Despachos
+  back-despachos:
+    build: ./back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO
+    container_name: service_despachos
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db-mysql:3306/smartlogix_db?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root_password
+    depends_on:
+      - db-mysql
+    networks:
+      - smartlogix-net
+
+  # Ventas
+  back-ventas:
+    build: ./back-Ventas_SpringBoot/Springboot-API-REST
+    container_name: service_ventas
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db-mysql:3306/smartlogix_db?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root_password
+    depends_on:
+      - db-mysql
+    networks:
+      - smartlogix-net
+
+  # Frontend (Nginx Server)
+  web_front:
+    build:
+      context: ./front_despacho
+      dockerfile: Dockerfile
+    container_name: web_front
+    ports:
+      - "80:8080" # Tu Windows lo leerá en el puerto 80 (http://localhost)
+    networks:
+      - smartlogix-net
+    depends_on:
+      - back-ventas
+      - back-despachos
+
+volumes:
+  mysql_data: # Justificación de defensa técnica: Los Named Volumes son gestionados completamente por Docker, asegurando el aislamiento y la persistencia de los datos independientemente del ciclo de vida de los contenedores de MySQL.
+
+networks:
+  smartlogix-net:
+    driver: bridge
