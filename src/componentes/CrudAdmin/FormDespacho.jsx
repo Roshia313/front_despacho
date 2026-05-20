@@ -25,20 +25,20 @@ export const FormDespacho = ({ venta, onClose }) => {
 
     try {
       await axios.put(
-        `http://192.168.30/api/v1/ventas/${venta.idVenta}`,
+        `/api/v1/ventas/${venta.idVenta}`,
         jsonDataSales,
         {
-          headers:{
+          headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
-      }
+          }
         }
       );
-      await axios.post("http://192.168.320/api/v1/despachos", jsonData, {
-        headers:{
+      await axios.post("/api/v1/despachos", jsonData, {
+        headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
-    }
+        }
       });
       Swal.fire({
         title: "Despacho registrado 🛻!",
@@ -107,7 +107,6 @@ export const FormDespacho = ({ venta, onClose }) => {
             disabled={true}
           />
         </div>
-
         <button
           className="py-6 px-14 rounded-lg bg-teal-600 text-white font-bold mb-14"
           type="submit"
