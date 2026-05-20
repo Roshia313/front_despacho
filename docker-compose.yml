@@ -1,7 +1,4 @@
-version: '3.8'
-
 services:
-  # Base de Datos MySQL
   db-mysql:
     image: mysql:8.0
     container_name: mysql_db
@@ -11,13 +8,12 @@ services:
     ports:
       - "3307:3306"
     volumes:
-      - mysql_data:/var/lib/mysql # Requisito 2: Persistencia con Named Volume
+      - mysql_data:/var/lib/mysql
     networks:
       - smartlogix-net
 
-  # Despachos
   back-despachos:
-    build: ./back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO
+    build: ../back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO
     container_name: service_despachos
     ports:
       - "8081:8081"
@@ -30,9 +26,8 @@ services:
     networks:
       - smartlogix-net
 
-  # Ventas
   back-ventas:
-    build: ./back-Ventas_SpringBoot/Springboot-API-REST
+    build: ../back-Ventas_SpringBoot/Springboot-API-REST
     container_name: service_ventas
     ports:
       - "8080:8080"
@@ -45,14 +40,13 @@ services:
     networks:
       - smartlogix-net
 
-  # Frontend (Nginx Server)
   web_front:
     build:
-      context: ./front_despacho
+      context: .
       dockerfile: Dockerfile
     container_name: web_front
     ports:
-      - "80:8080" # Tu Windows lo leerá en el puerto 80 (http://localhost)
+      - "80:8080"
     networks:
       - smartlogix-net
     depends_on:
@@ -60,7 +54,7 @@ services:
       - back-despachos
 
 volumes:
-  mysql_data: # Justificación de defensa técnica: Los Named Volumes son gestionados completamente por Docker, asegurando el aislamiento y la persistencia de los datos independientemente del ciclo de vida de los contenedores de MySQL.
+  mysql_data:
 
 networks:
   smartlogix-net:
