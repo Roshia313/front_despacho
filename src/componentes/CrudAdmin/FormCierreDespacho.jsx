@@ -16,13 +16,13 @@ export const FormCierreDespacho = ({ despacho, onClose }) => {
 
     try {
       await axios.put(
-        `/api/v1/despachos/${despacho.idDespacho}`,
+        `http://192.168.320/api/v1/despachos/${despacho.idDespacho}`,
         jsonData,
         {
-          headers: {
+          headers:{
             'Content-Type': 'application/json',
             'Accept': 'application/json'
-          }
+      }
         }
       );
       Swal.fire({
@@ -80,7 +80,7 @@ export const FormCierreDespacho = ({ despacho, onClose }) => {
           <input
             type="number"
             defaultValue={despacho.intento}
-            className="border border-gray-300 rounded-lg block w-full p-1"
+            className="border border-gray-300 rounded-lg block w-full  p-1"
             {...register("intento", { required: true })}
           />
         </div>
@@ -88,7 +88,7 @@ export const FormCierreDespacho = ({ despacho, onClose }) => {
           <label className="block font-bold mb-2">Despacho entregado</label>
           <select
             defaultValue={false}
-            className="border border-gray-300 rounded-lg block w-full p-1"
+            className="border border-gray-300 rounded-lg block w-full  p-1"
             {...register("despachado", { required: true })}
           >
             <option value={false}>Despacho abierto</option>
@@ -122,6 +122,7 @@ export const FormCierreDespacho = ({ despacho, onClose }) => {
             value={despacho.valorCompra}
           />
         </div>
+
         <button
           className="py-6 px-14 rounded-lg bg-teal-600 text-white font-bold mb-14"
           type="submit"
