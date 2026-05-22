@@ -13,7 +13,7 @@ services:
       - smartlogix-net
 
   back-despachos:
-    build: ../back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO
+    image: 992382711706.dkr.ecr.us-east-1.amazonaws.com/back-despachos:latest
     container_name: service_despachos
     ports:
       - "8081:8081"
@@ -27,7 +27,7 @@ services:
       - smartlogix-net
 
   back-ventas:
-    build: ../back-Ventas_SpringBoot/Springboot-API-REST
+    image: 992382711706.dkr.ecr.us-east-1.amazonaws.com/back-ventas:latest
     container_name: service_ventas
     ports:
       - "8080:8080"

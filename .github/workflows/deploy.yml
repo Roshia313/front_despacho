@@ -1,12 +1,13 @@
-#from_Despachos .githup
+#from_Despachos .github
 name: CI/CD Pipeline - Frontend a ECR
 on:
   push:
     branches:
-      - deploy # El pipeline arranca al hacer push a la rama deploy
+      - deploy
 env:
   AWS_REGION: us-east-1
-  ECR_REPOSITORY: frontend # El nombre exacto de tu repo en ECR
+  ECR_REPOSITORY: frontend
+  INSTANCE_ID: i-082bab4294e5c12f6
 jobs:
   build-and-push:
     name: Build y Push a AWS ECR
@@ -31,18 +32,18 @@ jobs:
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-    - name: Desplegar en EC2 vía SSH
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ec2-user
-        key: ${{ secrets.EC2_SSH_KEY }}
-        script: |
-          aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
-          
-          docker stop frontend-app || true
-          docker rm frontend-app || true
-          
-          docker pull ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
-          
-          docker run -d --name frontend-app -p 80:8080 ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
+    - name: Desplegar en EC2 via SSM
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      run: |
+        aws ssm send-command \
+          --instance-ids ${{ env.INSTANCE_ID }} \
+          --document-name "AWS-RunShellScript" \
+          --parameters commands="[
+            'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}',
+            'docker stop frontend-app || true',
+            'docker rm frontend-app || true',
+            'docker pull ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest',
+            'docker run -d --name frontend-app -p 80:8080 --add-host=back-ventas:10.0.0.147 --add-host=back-despachos:10.0.0.147 ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest'
+          ]" \
+          --region ${{ env.AWS_REGION }}

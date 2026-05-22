@@ -17,24 +17,24 @@ RUN echo 'server { \
     listen 8080; \
     \
     location / { \
-        root   /usr/share/nginx/html; \
-        index  index.html index.htm; \
-        try_files $uri $uri/ /index.html; \
+    root   /usr/share/nginx/html; \
+    index  index.html index.htm; \
+    try_files $uri $uri/ /index.html; \
     } \
     \
     # Enrutamiento local usando los nombres de los servicios de docker-compose \
     location /api/v1/ventas { \
-        proxy_pass http://back-ventas:8080; \
-        proxy_set_header Host $host; \
-        proxy_set_header X-Real-IP $remote_addr; \
+    proxy_pass http://back-ventas:8080; \
+    proxy_set_header Host $host; \
+    proxy_set_header X-Real-IP $remote_addr; \
     } \
     \
     location /api/v1/despachos { \
-        proxy_pass http://back-despachos:8081; \
-        proxy_set_header Host $host; \
-        proxy_set_header X-Real-IP $remote_addr; \
+    proxy_pass http://back-despachos:8081; \
+    proxy_set_header Host $host; \
+    proxy_set_header X-Real-IP $remote_addr; \
     } \
-}' > /etc/nginx/conf.d/default.conf
+    }' > /etc/nginx/conf.d/default.conf
 
 # Modificar permisos para que el usuario nativo 'nginx' pueda gestionar los directorios internos
 RUN chown -R nginx:nginx /usr/share/nginx/html /var/cache/nginx /var/run /var/log/nginx
