@@ -51,6 +51,7 @@ export const FormDespacho = ({ venta, onClose }) => {
     }
     onClose();
   };
+
   return (
     <>
       <form
@@ -98,4 +99,22 @@ export const FormDespacho = ({ venta, onClose }) => {
             className="border border-gray-300 rounded-lg block w-full text-slate-400 p-1"
           />
         </div>
-        <div clas
+        <div className="mb-5">
+          <label className="block font-bold mb-2">Valor de compra</label>
+          <input
+            type="number"
+            value={venta.valorCompra}
+            className="border border-gray-300 rounded-lg block w-full text-slate-400 p-1"
+            disabled={true}
+          />
+        </div>
+        <button
+          className="py-6 px-14 rounded-lg bg-teal-600 text-white font-bold mb-14"
+          type="submit"
+        >
+          Asignar despacho
+        </button>
+      </form>
+    </>
+  );
+};
