@@ -6,7 +6,7 @@ on:
 env:
   AWS_REGION: us-east-1
   ECR_REPOSITORY: frontend
-  INSTANCE_ID: i-07606770d684b8aac
+  INSTANCE_ID: i-039d4353d35bba683
 jobs:
   build-and-push:
     name: Build y Push a AWS ECR
