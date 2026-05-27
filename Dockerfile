@@ -19,12 +19,12 @@ RUN echo 'server { \
     try_files $uri $uri/ /index.html; \
     } \
     location /api/v1/ventas { \
-    proxy_pass http://10.0.0.147:8080; \
+    proxy_pass http://host.docker.internal:8080; \
     proxy_set_header Host $host; \
     proxy_set_header X-Real-IP $remote_addr; \
     } \
     location /api/v1/despachos { \
-    proxy_pass http://10.0.0.147:8081; \
+    proxy_pass http://host.docker.internal:8081; \
     proxy_set_header Host $host; \
     proxy_set_header X-Real-IP $remote_addr; \
     } \
